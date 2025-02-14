@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records del Club</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        table { width: 80%; margin: auto; border-collapse: collapse; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007BFF; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Records del Club</h1>
+    <div id="records">Cargando...</div>
+
+    <script>
+        async function cargarDatos() {
+            const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfGmunD4CHr8OxM1R2E5MpHWMa2lzRiG1A1MvnoLvmbDxVww3zsxe0hGgoClvJGQ/pub?output=csv";
+            const response = await fetch(url);
+            const data = await response.text();
+            
+            const rows = data.split("\n").map(row => row.split(","));
+            
+            let table = "<table><tr>";
+            rows[0].forEach(col => {
+                table += `<th>${col}</th>`;
+            });
+            table += "</tr>";
+
+            for (let i = 1; i < rows.length; i++) {
+                table += "<tr>";
+                rows[i].forEach(cell => {
+                    table += `<td>${cell}</td>`;
+                });
+                table += "</tr>";
+            }
+
+            table += "</table>";
+            document.getElementById("records").innerHTML = table;
+        }
+
+        window.onload = cargarDatos;
+    </script>
+</body>
+</html>
