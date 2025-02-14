@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Puntos FINA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto;
+            width: 150px;
+            height: auto;
+            padding-bottom: 10px;
+        }
+        h1 {
+            color: #d60000;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .container {
+            width: 95%;
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        select, input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 90%;
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #d60000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #a50000;
+        }
+        .result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://raw.githubusercontent.com/Joel1993055/Klub-Record2/main/S%C3%98LLER%C3%98D%20SV%C3%98MMEKLUB.png" alt="Klub Logo" class="logo">
+
+    <h1>Calculadora de Puntos FINA</h1>
+
+    <div class="container">
+        <label for="event">Selecciona una prueba:</label>
+        <select id="event">
+            <option value="100free">100m Libre</option>
+            <option value="200free">200m Libre</option>
+            <option value="400free">400m Libre</option>
+            <option value="800free">800m Libre</option>
+            <option value="1500free">1500m Libre</option>
+            <option value="100fly">100m Mariposa</option>
+            <option value="200fly">200m Mariposa</option>
+            <option value="100back">100m Espalda</option>
+            <option value="200back">200m Espalda</option>
+            <option value="100breast">100m Braza</option>
+            <option value="200breast">200m Braza</option>
+            <option value="200im">200m Estilos</option>
+            <option value="400im">400m Estilos</option>
+        </select>
+
+        <label for="gender">Selecciona la categoría:</label>
+        <select id="gender">
+            <option value="men">Masculino</option>
+            <option value="women">Femenino</option>
+        </select>
+
+        <label for="time">Introduce tu tiempo (min:seg.cent):</label>
+        <input type="text" id="time" placeholder="Ej: 1:52.34" />
+
+        <button onclick="calcularFINA()">Calcular Puntos</button>
+
+        <p class="result" id="result"></p>
+    </div>
+
+    <script>
+        // Tabla de puntos FINA base (Ejemplo, habría que actualizarla con los tiempos correctos)
+        const finaBaseTimes = {
+            "100free": { men: 47.50, women: 52.00 },
+            "200free": { men: 103.80, women: 113.50 },
+            "400free": { men: 220.07, women: 244.00 },
+            "800free": { men: 460.00, women: 505.00 },
+            "1500free": { men: 900.00, women: 960.00 },
+            "100fly": { men: 49.50, women: 55.50 },
+            "200fly": { men: 109.50, women: 121.00 },
+            "100back": { men: 51.80, women: 58.00 },
+            "200back": { men: 112.00, women: 125.00 },
+            "100breast": { men: 57.00, women: 63.00 },
+            "200breast": { men: 124.00, women: 138.00 },
+            "200im": { men: 112.00, women: 124.50 },
+            "400im": { men: 234.00, women: 267.00 }
+        };
+
+        function calcularFINA() {
+            let event = document.getElementById("event").value;
+            let gender = document.getElementById("gender").value;
+            let timeInput = document.getElementById("time").value.trim();
+
+            if (!timeInput.match(/^\d{1,2}:\d{2}\.\d{2}$/)) {
+                alert("Formato incorrecto. Usa Min:Seg.Cent (Ej: 1:52.34)");
+                return;
+            }
+
+            let partes = timeInput.split(":");
+            let minutos = parseInt(partes[0]);
+            let segundos = parseFloat(partes[1]);
+
+            let tiempoIngresado = minutos * 60 + segundos;
+            let tiempoBase = finaBaseTimes[event][gender];
+
+            if (!tiempoBase) {
+                document.getElementById("result").innerText = "No hay datos para esta prueba.";
+                return;
+            }
+
+            // Fórmula oficial de FINA para calcular puntos
+            let finaPoints = 1000 * Math.pow(tiempoBase / tiempoIngresado, 3);
+
+            document.getElementById("result").innerText = `Puntos FINA: ${Math.round(finaPoints)}`;
+        }
+    </script>
+
+</body>
+</html>
