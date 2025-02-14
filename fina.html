@@ -66,19 +66,29 @@
     <h1>Calculadora de Puntos FINA</h1>
 
     <div class="container">
+        <label for="pool">Selecciona la piscina:</label>
+        <select id="pool">
+            <option value="25m">Piscina Corta (25m)</option>
+            <option value="50m">Piscina Larga (50m)</option>
+        </select>
+
         <label for="event">Selecciona una prueba:</label>
         <select id="event">
+            <option value="50free">50m Libre</option>
             <option value="100free">100m Libre</option>
             <option value="200free">200m Libre</option>
             <option value="400free">400m Libre</option>
             <option value="800free">800m Libre</option>
             <option value="1500free">1500m Libre</option>
-            <option value="100fly">100m Mariposa</option>
-            <option value="200fly">200m Mariposa</option>
+            <option value="50back">50m Espalda</option>
             <option value="100back">100m Espalda</option>
             <option value="200back">200m Espalda</option>
+            <option value="50breast">50m Braza</option>
             <option value="100breast">100m Braza</option>
             <option value="200breast">200m Braza</option>
+            <option value="50fly">50m Mariposa</option>
+            <option value="100fly">100m Mariposa</option>
+            <option value="200fly">200m Mariposa</option>
             <option value="200im">200m Estilos</option>
             <option value="400im">400m Estilos</option>
         </select>
@@ -98,24 +108,23 @@
     </div>
 
     <script>
-        // Tabla de puntos FINA base (Ejemplo, habría que actualizarla con los tiempos correctos)
+        // Tiempos base FINA extraídos del PDF
         const finaBaseTimes = {
-            "100free": { men: 47.50, women: 52.00 },
-            "200free": { men: 103.80, women: 113.50 },
-            "400free": { men: 220.07, women: 244.00 },
-            "800free": { men: 460.00, women: 505.00 },
-            "1500free": { men: 900.00, women: 960.00 },
-            "100fly": { men: 49.50, women: 55.50 },
-            "200fly": { men: 109.50, women: 121.00 },
-            "100back": { men: 51.80, women: 58.00 },
-            "200back": { men: 112.00, women: 125.00 },
-            "100breast": { men: 57.00, women: 63.00 },
-            "200breast": { men: 124.00, women: 138.00 },
-            "200im": { men: 112.00, women: 124.50 },
-            "400im": { men: 234.00, women: 267.00 }
+            "50free":   { men: { "25m": 20.16, "50m": 20.91 }, women: { "25m": 22.93, "50m": 23.61 } },
+            "100free":  { men: { "25m": 44.84, "50m": 46.40 }, women: { "25m": 50.25, "50m": 51.71 } },
+            "200free":  { men: { "25m": 99.37, "50m": 102.00 }, women: { "25m": 110.31, "50m": 112.23 } },
+            "400free":  { men: { "25m": 212.25, "50m": 220.07 }, women: { "25m": 231.30, "50m": 235.38 } },
+            "800free":  { men: { "25m": 440.46, "50m": 452.12 }, women: { "25m": 477.42, "50m": 484.79 } },
+            "1500free": { men: { "25m": 846.88, "50m": 870.67 }, women: { "25m": 908.24, "50m": 920.48 } },
+            "50back":   { men: { "25m": 22.11, "50m": 23.55 }, women: { "25m": 25.25, "50m": 26.86 } },
+            "100back":  { men: { "25m": 48.33, "50m": 51.60 }, women: { "25m": 54.89, "50m": 57.13 } },
+            "200back":  { men: { "25m": 105.63, "50m": 111.92 }, women: { "25m": 118.94, "50m": 123.14 } },
+            "200im":    { men: { "25m": 109.63, "50m": 114.00 }, women: { "25m": 121.86, "50m": 126.12 } },
+            "400im":    { men: { "25m": 234.81, "50m": 242.50 }, women: { "25m": 258.94, "50m": 264.38 } }
         };
 
         function calcularFINA() {
+            let pool = document.getElementById("pool").value;
             let event = document.getElementById("event").value;
             let gender = document.getElementById("gender").value;
             let timeInput = document.getElementById("time").value.trim();
@@ -130,16 +139,9 @@
             let segundos = parseFloat(partes[1]);
 
             let tiempoIngresado = minutos * 60 + segundos;
-            let tiempoBase = finaBaseTimes[event][gender];
+            let tiempoBase = finaBaseTimes[event][gender][pool];
 
-            if (!tiempoBase) {
-                document.getElementById("result").innerText = "No hay datos para esta prueba.";
-                return;
-            }
-
-            // Fórmula oficial de FINA para calcular puntos
             let finaPoints = 1000 * Math.pow(tiempoBase / tiempoIngresado, 3);
-
             document.getElementById("result").innerText = `Puntos FINA: ${Math.round(finaPoints)}`;
         }
     </script>
